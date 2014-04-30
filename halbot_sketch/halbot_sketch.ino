@@ -23,7 +23,7 @@
 
 #define TRIGGER_PIN  3
 #define ECHO_PIN     2
-#define MAX_DISTANCE 200
+#define MAX_DISTANCE 25
 
 //for motor
 #define LeftDirectionP	12
@@ -77,6 +77,9 @@ void setup ()
   pinMode(RightBrakeP, OUTPUT);
   pinMode(RightDirectionP, OUTPUT);
   
+  pinMode(TRIGGER_PIN, OUTPUT);
+  pinMode(ECHO_PIN,INPUT);
+  
  // DirFromSerial = 'T';
  //STOP MOVING before ive sent you commands
   WheelControl(LeftDirectionP, LeftBrakeP, 3);
@@ -99,14 +102,21 @@ void loop ()
   Serial.print(",X:");
   Serial.print(analogRead(3));
   Serial.print(",Y:");
-  Serial.print(analogRead(3));
+  Serial.print(analogRead(4));
   Serial.print(",Z:");
-  Serial.println(analogRead(3));
+  Serial.println(analogRead(5));
   
   //Serial.println("cm");
   //Serial.print("Direction [F/S/R]: ");
-  TempChr = Serial.read();
+  //TempChr = Serial.read();
   
+  //Collision avoidance
+  if(cm < 5) {
+    TempChr = 'X';
+  } 
+  else {  
+    TempChr = Serial.read();
+  }
   
  // lcd.clear();
  // lcd.print("Dist: " + String(cm) + "cm");
@@ -156,70 +166,7 @@ void loop ()
   
   analogWrite(LeftSpeedP, Speed);
   analogWrite(RightSpeedP, Speed);
-    
- /* switch (Left) {
-    case 1: //forward
-        digitalWrite(LeftDirectionP, HIGH); 
-        digitalWrite(LeftBrakeP, LOW);
-        break;
-    case 2: //backwards
-        digitalWrite(LeftDirectionP, LOW); 
-        digitalWrite(LeftBrakeP, LOW);
-        break; 
-    case 3: //stop
-        digitalWrite(LeftBrakeP, HIGH);
-        break;
-  }*/
-
+ 
   
-  
-  
-  
- /* if(BackForward == 'F')
-  {
-     digitalWrite(LeftDirectionP, HIGH); //Establishes forward direction of Channel A
-     digitalWrite(RightDirectionP, HIGH); //Establishes forward direction of Channel B
-  }
-  else
-  {
-     digitalWrite(LeftDirectionP, LOW); 
-     digitalWrite(RightDirectionP, LOW);
-  }
-
-  if(DirFromSerial == 'S' || DirFromSerial == 'L')
-  {
-   
-    digitalWrite(LeftBrakeP, LOW);   //Disengage the Brake for Channel A
-    analogWrite(LeftSpeedP, Speed);   //Spins the motor on Channel A at full speed
-  }
-  
-  if(DirFromSerial == 'S' || DirFromSerial == 'R')
-  {
-    
-    
-    digitalWrite(RightBrakeP, LOW);   //Disengage the Brake for Channel B
-    analogWrite(RightSpeedP, Speed);   //Spins the motor on Channel B at full speed
-  }
-  
-  if(DirFromSerial == 'R' || DirFromSerial == 'T')
-  {
-    digitalWrite(LeftBrakeP, HIGH);
-  }
-  
-  if(DirFromSerial == 'T' || DirFromSerial == 'L')
-  {
-    //stop
-    digitalWrite(RightBrakeP, HIGH);
-    
-  }*/
-  
-  
-  //backward @ half speed
- // digitalWrite(12, LOW); //Establishes backward direction of Channel A
-  //digitalWrite(9, LOW);   //Disengage the Brake for Channel A
-  //analogWrite(3, 123);   //Spins the motor on Channel A at half speed
-
-  
-  
-  delay(500);
+  delay(100);
 }
